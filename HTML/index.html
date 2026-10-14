@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimación de la probabilidad condicional de ganar un punto en tenis profesional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('tennis_app_theme') || 'dark';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch(e) {}
+        })();
+    </script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <span class="logo-mark">●</span>
+                <div>
+                    <h1>Estimación de la probabilidad condicional de ganar un punto en tenis profesional</h1>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="btn-theme-toggle" id="btn-theme-toggle" onclick="toggleTheme()" title="Alternar entre Modo Día y Noche">
+                    <span class="theme-icon" id="theme-toggle-icon">☀️</span>
+                    <span class="theme-text" id="theme-toggle-text">Modo Día</span>
+                </button>
+                <span class="badge" title="Autor del modelo e investigación">Federico Soler</span>
+            </div>
+        </header>
+
+        <!-- Main Dashboard 2-Column Grid: Evaluation Bar & Court (Left) | Matrix & Evolution (Right) -->
+        <div class="main-dashboard-grid" id="main-dashboard-grid">
+            <!-- Left Column: Evaluation Bar & Horizontal Court -->
+            <div class="dashboard-col dashboard-col-left">
+                <!-- Evaluation Bar -->
+                <section class="eval-section">
+                    <div class="eval-labels">
+                        <div class="eval-player server-label">
+                            <span class="player-dot server-dot"></span>
+                            <span class="player-name">Sacador</span>
+                            <span class="player-pct" id="server-pct">64%</span>
+                        </div>
+                        <div class="eval-player returner-label">
+                            <span class="player-pct" id="returner-pct">36%</span>
+                            <span class="player-name">Restador</span>
+                            <span class="player-dot returner-dot"></span>
+                        </div>
+                    </div>
+                    <div class="eval-bar-container">
+                        <div class="eval-bar">
+                            <div class="eval-bar-fill" id="eval-bar-fill" style="width: 64%">
+                                <span class="bar-value" id="bar-value">0.64</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tennis Court Visualization (Horizontal) -->
+                <section class="court-card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <h2>Cancha de Tenis</h2>
+                        </div>
+                        <div class="court-header-actions">
+                            <span class="court-rally-badge" id="court-shot-badge">Saque</span>
+                            <button class="btn-court-pill" id="btn-court-side" onclick="toggleServeSide()" title="Alternar lado del saque inicial">
+                                Lado: <strong id="court-side-text">Deuce</strong>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="court-wrapper horizontal-court-wrapper">
+                        <svg id="tennis-court-svg" class="tennis-court-svg horizontal" viewBox="0 0 640 340" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                                <!-- Gradients -->
+                                <linearGradient id="court-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#14213d"/>
+                                    <stop offset="50%" stop-color="#182849"/>
+                                    <stop offset="100%" stop-color="#14213d"/>
+                                </linearGradient>
+                                <linearGradient id="court-gradient-day" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#1e40af"/>
+                                    <stop offset="50%" stop-color="#2563eb"/>
+                                    <stop offset="100%" stop-color="#1e40af"/>
+                                </linearGradient>
+                                <radialGradient id="ball-glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stop-color="#fef08a" stop-opacity="1"/>
+                                    <stop offset="70%" stop-color="#eab308" stop-opacity="0.8"/>
+                                    <stop offset="100%" stop-color="#ca8a04" stop-opacity="0"/>
+                                </radialGradient>
+                                <!-- Arrow Markers -->
+                                <marker id="arrow-server" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+                                </marker>
+                                <marker id="arrow-returner" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#60a5fa"/>
+                                </marker>
+                                <marker id="arrow-preview" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
+                                </marker>
+                                <marker id="arrow-fault" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 1 L 10 5 L 0 9 z" fill="#f87171"/>
+                                </marker>
+                            </defs>
+
+                            <!-- Outer Court Surround -->
+                            <rect class="court-surround-rect" x="10" y="10" width="620" height="320" rx="14"/>
+
+                            <!-- Inner Tennis Court (Doubles boundary: 540 x 250) -->
+                            <rect class="court-inner-rect" x="50" y="45" width="540" height="250"/>
+
+                            <!-- Singles Sidelines (Horizontal) -->
+                            <line x1="50" y1="76" x2="590" y2="76" stroke="#ffffff" stroke-width="2" stroke-opacity="0.95"/>
+                            <line x1="50" y1="264" x2="590" y2="264" stroke="#ffffff" stroke-width="2" stroke-opacity="0.95"/>
+
+                            <!-- Service Lines (Vertical) -->
+                            <line x1="175" y1="76" x2="175" y2="264" stroke="#ffffff" stroke-width="2" stroke-opacity="0.95"/>
+                            <line x1="465" y1="76" x2="465" y2="264" stroke="#ffffff" stroke-width="2" stroke-opacity="0.95"/>
+
+                            <!-- Center Service Line ("T", Horizontal) -->
+                            <line x1="175" y1="170" x2="465" y2="170" stroke="#ffffff" stroke-width="2" stroke-opacity="0.95"/>
+
+                            <!-- Center Marks at Baselines -->
+                            <line x1="50" y1="170" x2="64" y2="170" stroke="#ffffff" stroke-width="2.5"/>
+                            <line x1="590" y1="170" x2="576" y2="170" stroke="#ffffff" stroke-width="2.5"/>
+
+                            <!-- Net & Posts (Vertical) -->
+                            <line x1="320" y1="32" x2="320" y2="308" stroke="#94a3b8" stroke-width="4"/>
+                            <line x1="320" y1="32" x2="320" y2="308" stroke="#f8fafc" stroke-width="1.5" stroke-dasharray="3,2"/>
+                            <circle cx="320" cy="32" r="4.5" fill="#e2e8f0"/>
+                            <circle cx="320" cy="308" r="4.5" fill="#e2e8f0"/>
+
+                            <!-- Court Player Text Labels -->
+                            <text x="50" y="28" text-anchor="middle" class="court-svg-label label-server">SACADOR</text>
+                            <text x="590" y="28" text-anchor="middle" class="court-svg-label label-returner">RESTADOR</text>
+                            <text x="320" y="22" text-anchor="middle" class="court-svg-label label-net">RED</text>
+
+                            <!-- Dynamic Groups -->
+                            <g id="court-zones-overlay"></g>
+                            <g id="court-trajectories"></g>
+                            <g id="court-preview"></g>
+                            <g id="court-landings"></g>
+                        </svg>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Tactical Decision Matrix & Temporal Evolution -->
+            <div class="dashboard-col dashboard-col-right">
+                <!-- Shot Input Controls -->
+                <section class="input-section">
+                    <!-- Serve Actions: Fault & Ace (1st & 2nd Serve) -->
+                    <div class="serve-actions" id="serve-actions">
+                        <button class="btn btn-fault" id="btn-fault" onclick="handleServeFault()" title="Registrar falta en el saque">
+                            <span class="btn-icon">✕</span>
+                            <span id="btn-fault-text">Falta 1er saque</span>
+                        </button>
+                        <button class="btn btn-toggle btn-serve-ace" id="btn-serve-ace" onclick="toggleServeAce()" title="Activar/desactivar Ace">
+                            <span class="toggle-indicator" id="serve-ace-indicator">○</span>
+                            <span id="serve-ace-text">Ace</span>
+                        </button>
+                    </div>
+
+                    <!-- Rally Quick Actions: Unforced & Forced Error -->
+                    <div class="serve-actions rally-actions" id="rally-actions" style="display: none;">
+                        <button class="btn btn-fault btn-rally-unforced" id="btn-rally-unforced" onclick="executeRallyError('unforced')" title="Cometer Error No Forzado">
+                            <span class="btn-icon">✕</span>
+                            <span id="btn-unforced-text">Error no forzado</span>
+                        </button>
+                        <button class="btn btn-fault btn-rally-forced" id="btn-rally-forced" onclick="executeRallyError('forced')" title="Cometer Error Forzado">
+                            <span class="btn-icon">⚡</span>
+                            <span id="btn-forced-text">Error forzado</span>
+                        </button>
+                    </div>
+
+                    <!-- Tactical Decision Matrix Cockpit -->
+                    <div class="matrix-decision-section">
+                        <div class="matrix-section-header">
+                            <div class="matrix-title-group">
+                                <span class="matrix-title-badge">Matriz de tiros</span>
+                                <div class="hitter-badge server-hitting" id="hitter-badge">
+                                    <span class="hitter-icon-dot"></span>
+                                    <span class="hitter-text">Turno del Sacador</span>
+                                    <span class="shot-num" id="shot-num">Tiro #0</span>
+                                </div>
+                            </div>
+                            <div class="matrix-filter-pills" id="matrix-category-tabs" style="display: none;">
+                                <button class="btn-pill-tab active" id="tab-main-shots" onclick="switchMatrixCategory('main')">Fondo</button>
+                                <button class="btn-pill-tab" id="tab-special-shots" onclick="switchMatrixCategory('specials')">Especiales y Red</button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Tactical Matrix Grid Container -->
+                        <div id="tactical-matrix-container" class="tactical-matrix-container">
+                            <!-- Populated dynamically by app.js -->
+                        </div>
+
+                        <!-- Secondary Controls: Depth & Modifiers (for Rally) -->
+                        <div class="matrix-secondary-row" id="matrix-secondary-row" style="display: none;">
+                            <!-- Depth Selection -->
+                            <div class="secondary-control-group" id="group-depth">
+                                <label class="control-micro-label">Profundidad del Tiro</label>
+                                <div class="btn-row-micro" id="depth-row">
+                                    <button class="btn btn-depth" data-depth="7" onclick="selectDepth(this)">
+                                        <span class="depth-icon">▬</span> Corta
+                                    </button>
+                                    <button class="btn btn-depth selected" data-depth="8" onclick="selectDepth(this)">
+                                        <span class="depth-icon">▬▬</span> Media
+                                    </button>
+                                    <button class="btn btn-depth" data-depth="9" onclick="selectDepth(this)">
+                                        <span class="depth-icon">▬▬▬</span> Profunda
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Tactical Modifiers -->
+                            <div class="secondary-control-group">
+                                <label class="control-micro-label">Modificadores Tácticos</label>
+                                <div class="btn-row-micro">
+                                    <button class="btn btn-toggle" id="btn-approach" onclick="toggleApproach()" title="El jugador sube a la red luego del golpe">
+                                        <span class="toggle-indicator" id="approach-indicator">○</span>
+                                        Approach (Subida)
+                                    </button>
+                                    <button class="btn btn-toggle" id="btn-winner" onclick="toggleWinner()" title="Tiro ganador que no puede ser devuelto (tecla W)">
+                                        <span class="toggle-indicator" id="winner-indicator">○</span>
+                                        <span id="winner-label">Punto Ganador</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons -->
+                        <div class="action-buttons matrix-action-buttons">
+                            <button class="btn btn-hit" id="btn-hit" onclick="registerShot()">
+                                <span class="hit-icon">►</span> Golpear (Enter)
+                            </button>
+                            <button class="btn btn-undo" id="btn-undo" onclick="undoShot()" title="Deshacer último golpe (Ctrl+Z o Backspace)">
+                                <span class="undo-icon">↩</span> Deshacer
+                            </button>
+                            <button class="btn btn-reset" id="btn-reset" onclick="resetAll()">
+                                <span class="reset-icon">↺</span> Reiniciar punto (Esc)
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Evolución Temporal / Simulación (eval_bar_simulation) -->
+                <section class="chart-section" id="chart-section">
+                    <div class="chart-header">
+                        <div class="chart-title-group">
+                            <h2>Evolución Temporal de Probabilidad</h2>
+                        </div>
+                        <div class="chart-legend-inline">
+                            <div class="legend-badge legend-server">
+                                <span class="marker-box">■</span>
+                                <span>P(Victoria Sacador)</span>
+                            </div>
+                            <div class="legend-badge legend-returner">
+                                <span class="marker-circle">●</span>
+                                <span>P(Victoria Restador)</span>
+                            </div>
+                            <div class="legend-badge legend-neutral">
+                                <span class="marker-line"></span>
+                                <span>Neutralidad táctica (0.50)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-wrapper" id="chart-wrapper">
+                        <svg id="eval-chart-svg" class="eval-chart-svg" viewBox="0 0 920 330" preserveAspectRatio="xMidYMid meet">
+                            <!-- Trajectory curves and rotated shot names rendered via app.js -->
+                        </svg>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Status bar -->
+        <div class="status-bar" id="status-bar">
+            Inicializando modelo XGBoost (58 features)...
+        </div>
+    </div>
+
+    <!-- Scripts (Solo 2 archivos: Modelo y Aplicación) -->
+    <script src="model-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
