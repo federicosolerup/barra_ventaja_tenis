@@ -1,3 +1,8 @@
+# Barra de Ventaja Táctica en Tenis Profesional 🎾
+
+## 📄 Paper Científico
+* 📥 **[Descargar / Leer Paper en PDF: Estimación de la probabilidad condicional de ganar un punto en tenis profesional](barra_ventaja_tenis_Soler_Federico_v9.pdf)**
+
 ## 📌 Descripción del Proyecto
 
 A través del procesamiento del corpus del Match Charting Project (MCP) sobre partidos ATP masculinos entre jugadores diestros, se entrenó un modelo XGBoost que infiere tiro a tiro la probabilidad condicional de que el jugador al servicio gane el punto.
