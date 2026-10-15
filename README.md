@@ -1,43 +1,40 @@
-# Barra de Ventaja Táctica en Tenis Profesional 🎾
+# Estimación de la probabilidad condicional de ganar un punto en tenis profesional
 
-## 📄 Paper Científico
-* 📥 **[Descargar / Leer Paper en PDF: Estimación de la probabilidad condicional de ganar un punto en tenis profesional](barra_ventaja_tenis_Soler_Federico_v9.pdf)**
+* **[PDF - Paper](barra_ventaja_tenis_Soler_Federico_v9.pdf)**
 
-## 📌 Descripción del Proyecto
+Modelo XGBoost que infiere tiro a tiro la probabilidad condicional de que el jugador al servicio gane el punto.
 
-A través del procesamiento del corpus del Match Charting Project (MCP) sobre partidos ATP masculinos entre jugadores diestros, se entrenó un modelo XGBoost que infiere tiro a tiro la probabilidad condicional de que el jugador al servicio gane el punto.
+* **[Google Colab - Pipeline completo](https://colab.research.google.com/github/federicosolerup/barra_ventaja_tenis/blob/main/pipeline.ipynb)**
 
-* 🔬 **[Colab](https://colab.research.google.com/github/federicosolerup/barra_ventaja_tenis/blob/main/pipeline.ipynb)**: Carga el modelo pre-entrenado y genera la simulación gráfica del caso de estudio.
+Aplicación web que permite introducir una secuencia de golpes y analizar la probabilidad de victoria.
+
+* **[Simulación Web Interactiva](https://federicosolerup.github.io/barra_ventaja_tenis/HTML/index.html)**
+
+Overlay sobre un punto televisado. 
+
+* **[Video - YouTube](https://www.youtube.com/watch?v=PUkFia3wEEY)**
 
 ---
 
-## 📊 Caso de Estudio: Juan Martín del Potro vs. Roger Federer
-
-Simulación paso a paso de la evolución de probabilidad de victoria en un punto bisagra (Final US Open 2009, 5to set, 4-2, 30-40, Break Point):
+## Caso de Estudio: Juan Martín del Potro vs. Roger Federer
 
 ![Evolución de la Probabilidad Condicional de Victoria](overleaf/eval_bar_simulation.png)
 
 ---
 
-## 🔬 Estudio de Ablación Temporal
+## Métricas obtenidas
 
-| Modelo | Memoria Temporal | Variables | Accuracy | AUC-ROC | Brier Score | Log Loss | ECE |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Dummy Uniforme** | Ninguna (=0.50$) | 0 | 50.00% | 50.00% | 0.2500 | 0.6931 | 6.70% |
-| **Dummy Mayoría** | Frecuentista (=0.567$) | 0 | 56.70% | 50.00% | 0.2455 | 0.6841 | 0.00% |
-| **XGBoost (t)** | Impacto actual | 20 | 66.86% | 72.86% | 0.2106 | 0.6090 | 1.84% |
-| **XGBoost (t, t-1)** | Impacto + Respuesta rival | 39 | 67.31% | 73.57% | 0.2078 | 0.6027 | 1.48% |
-| **XGBoost (t, t-1, t-2)** | Impacto + Respuesta + Preparación | **58** | **67.65%** | **74.07%** | **0.2057** | **0.5982** | **1.21%** |
-
----
-
-## 💻 Simulación Web Interactiva
-
-El directorio /HTML contiene una aplicación web construida con tecnologías estándar (HTML5 Canvas, CSS Vanilla y JavaScript moderno) que permite introducir una secuencia de golpes manualmente y analizar como fluctúa la probabilidad de victoria de los jugadores tiro a tiro.
+| Modelo | Accuracy | AUC-ROC | Brier Score | Log Loss | ECE | Precision (Sacador) | Recall (Sacador) | F1-Score (Sacador) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Dummy (p = 0,50) | 50.00% | 50.00% | 0.2500 | 0.6931 | 6.70% | 56.70% | 50.00% | 53.14% |
+| Dummy (p = 0,567) | 56.70% | 50.00% | 0.2455 | 0.6842 | 0.16% | 56.70% | 100.00% | 72.37% |
+| XGBoost (t) | 59.40% | 61.04% | 0.2364 | 0.6653 | 0.14% | 61.42% | 76.33% | 68.07% |
+| XGBoost (t, t-1) | 60.34% | 63.77% | 0.2302 | 0.6508 | 0.39% | 62.25% | 76.34% | 68.58% |
+| **XGBoost (t, t-1, t-2)** | **60.51%** | **64.10%** | **0.2292** | **0.6484** | **0.48%** | **62.30%** | **76.89%** | **68.83%** |
 
 ---
 
-## 📖 Cita y Referencias Académicas
+## Cita y Referencias Académicas
 
 `ibtex
 @misc{soler2026barratenis,
