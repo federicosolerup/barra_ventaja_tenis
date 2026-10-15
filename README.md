@@ -18,7 +18,7 @@ Overlay sobre un punto televisado.
 
 ## Caso de Estudio: Juan Martín del Potro vs. Roger Federer
 
-![Evolución de la Probabilidad Condicional de Victoria](overleaf/eval_bar_simulation.png)
+![Evolución de la Probabilidad Condicional de Victoria](eval_bar_simulation.png)
 
 ---
 
