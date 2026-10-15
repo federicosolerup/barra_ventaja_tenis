@@ -36,11 +36,11 @@ Overlay sobre un punto televisado.
 
 ## Cita y Referencias Académicas
 
-`ibtex
+```bibtex
 @misc{soler2026barratenis,
   author       = {Federico Soler},
   title        = {Estimación de la probabilidad condicional de ganar un punto en tenis profesional},
   year         = {2026},
   howpublished = {https://github.com/federicosolerup/barra_ventaja_tenis}
 }
-`
+```
