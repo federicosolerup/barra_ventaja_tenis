@@ -1,6 +1,6 @@
 # Estimación de la probabilidad condicional de ganar un punto en tenis profesional
 
-* **[PDF - Paper](barra_ventaja_tenis_Soler_Federico_v9.pdf)**
+* **[PDF - Paper](barra_ventaja_tenis_Soler_Federico_v10.pdf)**
 
 Modelo XGBoost que infiere tiro a tiro la probabilidad condicional de que el jugador al servicio gane el punto.
 
