@@ -36,14 +36,6 @@ Evaluación sobre 711.993 tiros correspondientes a 970 partidos del conjunto de 
 
 ---
 
-## Reproducibilidad
-
-El notebook [`pipeline.ipynb`](pipeline.ipynb) carga los datos de la carpeta `dataset` y reconstruye la separación por partidos mediante `GroupShuffleSplit`, con `test_size=0.20` y `random_state=42`. Entrena y evalúa los modelos de una y dos ventanas temporales. Si encuentra `modelo_xgboost_3tiros.json`, carga el modelo completo guardado para evaluar sus predicciones sin reentrenarlo; en caso contrario, lo entrena. Incluye los baselines, las métricas de evaluación, una matriz de confusión y la reconstrucción del recorrido de los árboles para el cuarto tiro del caso de estudio.
-
-La figura del caso de estudio reconstruye un punto real de la final del US Open 2009 entre Del Potro y Federer. Las profundidades faltantes se completaron manualmente mediante la observación del video; las probabilidades previas a los dos primeros servicios y el valor final del punto se incorporan manualmente para completar la visualización.
-
----
-
 ## Cita y Referencias Académicas
 
 ```bibtex
