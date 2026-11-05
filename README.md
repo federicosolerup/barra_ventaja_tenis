@@ -1,18 +1,14 @@
 # Estimación de la probabilidad condicional de ganar un punto en tenis profesional
 
-* **[PDF - Paper](barra_ventaja_tenis_Soler_Federico_v11.pdf)**
+* **[PDF - Paper](barra_ventaja_tenis_Soler_Federico_v12.pdf)**
 
 Modelo XGBoost que infiere tiro a tiro la probabilidad condicional de que el jugador al servicio gane el punto.
 
 * **[Google Colab - Pipeline completo](https://colab.research.google.com/github/federicosolerup/barra_ventaja_tenis/blob/main/pipeline.ipynb)**
 
-Aplicación web que permite introducir una secuencia de golpes y analizar la probabilidad de victoria.
-
-* **[Simulación Web Interactiva](https://federicosolerup.github.io/barra_ventaja_tenis/HTML/index.html)**
-
 Overlay sobre un punto televisado. 
 
-* **[Video - YouTube](https://www.youtube.com/watch?v=PUkFia3wEEY)**
+* **[Video - YouTube](https://youtu.be/8rofKJLzumg)**
 
 ---
 
@@ -24,17 +20,15 @@ Overlay sobre un punto televisado.
 
 ## Métricas obtenidas
 
-Evaluación sobre 711.993 tiros correspondientes a 970 partidos del conjunto de prueba. El Dummy Uniforme genera predicciones aleatorias reproducibles con semilla 42 y asigna una probabilidad constante de 0,50. El Dummy Mayoría predice siempre la victoria del sacador. El modelo XGBoost de tres tiros se evaluó a partir del archivo JSON guardado, sin volver a entrenarlo. Las variantes de uno y dos tiros se entrenaron y evaluaron nuevamente en el mismo conjunto de prueba.
+Evaluación sobre 722.280 tiros correspondientes a 970 partidos del conjunto de prueba. El Dummy Uniforme genera predicciones aleatorias reproducibles con semilla 42 y asigna una probabilidad constante de 0,50. El Dummy Mayoría predice siempre la victoria del sacador. Los tres modelos XGBoost, con ventanas de uno, dos y tres tiros, se entrenaron y evaluaron sobre el mismo conjunto de prueba, separado del entrenamiento por partidos.
 
 | Modelo | Accuracy | AUC-ROC | Brier Score | ECE | Precision (Sacador) | Recall (Sacador) | F1-Score (Sacador) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Dummy Uniforme (aleatorio) | 50.05% | 50.00% | 0.2500 | 6.70% | 56.74% | 50.06% | 53.19% |
-| Dummy Mayoría | 56.70% | 50.00% | 0.2455 | 0.16% | 56.70% | 100.00% | 72.37% |
-| XGBoost (t) | 59.40% | 61.03% | 0.2364 | 0.14% | 61.43% | 76.33% | 68.07% |
-| XGBoost (t, t-1) | 60.32% | 63.75% | 0.2303 | 0.41% | 62.25% | 76.27% | 68.55% |
-| **XGBoost (t, t-1, t-2)** | **60.53%** | **64.11%** | **0.2291** | **0.49%** | **62.38%** | **76.58%** | **68.75%** |
-
----
+| Dummy Uniforme (aleatorio) | 50.01% | 50.00% | 0.2500 | 7.18% | 57.19% | 50.02% | 53.37% |
+| Dummy Mayoría | 57.18% | 50.00% | 0.2448 | 0.18% | 57.18% | 100.00% | 72.76% |
+| XGBoost (t) | 60.87% | 64.23% | 0.2288 | 0.31% | 62.84% | 77.23% | 69.30% |
+| XGBoost (t, t-1) | 61.58% | 65.62% | 0.2248 | 0.50% | 63.47% | 77.30% | 69.70% |
+| **XGBoost (t, t-1, t-2)** | **61.68%** | **65.78%** | **0.2244** | **0.60%** | **63.55%** | **77.35%** | **69.77%** |
 
 ## Cita y Referencias Académicas
 
